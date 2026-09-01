@@ -58,7 +58,7 @@
 
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- SECCIÓN CLIENTE: AGENDAR CITA (PÚBLICA) -->
+    <!-- SECCIÓN CLIENTE: AGENDAR CITA -->
     <section id="client-section" class="block">
       <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-100">
         <div class="text-center mb-6">
@@ -89,7 +89,7 @@
             <div>
               <label class="block text-sm font-semibold text-slate-700 mb-1">Fecha de Atención *</label>
               <select id="appointment-date" onchange="updateAvailableTimes()" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition">
-                <option value="">Cargando fechas disponibles...</option>
+                <option value="">Cargando disponibilidad...</option>
               </select>
             </div>
             <div>
@@ -118,10 +118,10 @@
 
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1">Notas Adicionales</label>
-            <textarea id="appointment-notes" rows="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition" placeholder="Indica si presentas dolor, alergias o alguna molestia en específico..."></textarea>
+            <textarea id="appointment-notes" rows="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition" placeholder="Indica si presentas dolor o alguna molestia específica..."></textarea>
           </div>
 
-          <button type="submit" class="w-full py-3.5 bg-brandPink hover:bg-brandPink-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-base">
+          <button type="submit" id="btn-save-appointment" class="w-full py-3.5 bg-brandPink hover:bg-brandPink-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center space-x-2 text-base">
             <i data-lucide="check-circle" class="w-5 h-5"></i>
             <span>Confirmar Reserva</span>
           </button>
@@ -129,13 +129,13 @@
       </div>
     </section>
 
-    <!-- SECCIÓN DOCTORA: PANEL DE CONTROL (PRIVADO) -->
+    <!-- SECCIÓN DOCTORA: PANEL DE CONTROL -->
     <section id="doctor-section" class="hidden space-y-8">
       
       <div class="flex justify-between items-center bg-brandPink-light p-4 rounded-xl border border-brandPink/20">
         <div>
           <h2 class="font-black text-brandPink text-lg">Panel Administrativo</h2>
-          <p class="text-xs text-slate-600">Sesión iniciada como Dra. Carolina Palencia</p>
+          <p class="text-xs text-slate-600">Conectado a Firebase Cloud Database</p>
         </div>
         <button onclick="logoutDoctor()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center space-x-1">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
@@ -159,12 +159,9 @@
         </button>
       </div>
 
-      <!-- Tab 1: Lista de Citas Programadas -->
+      <!-- Tab 1: Citas -->
       <div id="appointments-list-tab" class="block space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xl font-bold text-slate-800">Citas de Pacientes</h3>
-        </div>
-
+        <h3 class="text-xl font-bold text-slate-800">Citas de Pacientes</h3>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
           <table class="w-full text-left text-sm text-slate-600">
             <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
@@ -177,37 +174,27 @@
                 <th class="p-4 text-center">Acciones</th>
               </tr>
             </thead>
-            <tbody id="appointments-table-body">
-              <!-- Citas dinámicas -->
-            </tbody>
+            <tbody id="appointments-table-body"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Tab 2: Gestión de Disponibilidad y Fechas de Atención -->
+      <!-- Tab 2: Disponibilidad -->
       <div id="availability-tab" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          <!-- Formulario Agregar/Editar Disponibilidad -->
           <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-              <i data-lucide="calendar-plus" class="w-5 h-5 text-brandTeal"></i> Habilitar Fecha y Horarios
+              <i data-lucide="calendar-plus" class="w-5 h-5 text-brandTeal"></i> Habilitar Fecha
             </h4>
-            <p class="text-xs text-slate-500">Selecciona un día y marca los bloques de horarios en los que atenderás consultas.</p>
-
             <form onsubmit="handleSaveAvailability(event)" class="space-y-4">
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Fecha a atender *</label>
                 <input type="date" id="avail-date" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brandTeal focus:outline-none">
               </div>
-
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-2">Horarios Disponibles *</label>
-                <div class="grid grid-cols-2 gap-2 text-xs" id="hours-checkboxes">
-                  <!-- Generado por JS -->
-                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs" id="hours-checkboxes"></div>
               </div>
-
               <button type="submit" class="w-full py-2.5 bg-brandTeal hover:bg-brandTeal-hover text-white font-bold rounded-lg text-sm shadow-sm flex items-center justify-center space-x-2">
                 <i data-lucide="save" class="w-4 h-4"></i>
                 <span>Guardar Disponibilidad</span>
@@ -215,49 +202,41 @@
             </form>
           </div>
 
-          <!-- Lista de Fechas Configuradas -->
           <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-              <i data-lucide="calendar-range" class="w-5 h-5 text-brandPink"></i> Fechas Habilitadas para Citas
+              <i data-lucide="calendar-range" class="w-5 h-5 text-brandPink"></i> Fechas Habilitadas
             </h4>
-            <div id="availability-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto">
-              <!-- Tarjetas dinámicas -->
-            </div>
+            <div id="availability-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto"></div>
           </div>
-
         </div>
       </div>
 
-      <!-- Tab 3: Pacientes e Historial de Tratamientos -->
+      <!-- Tab 3: Historial -->
       <div id="patients-history-tab" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
           <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
               <i data-lucide="users" class="w-4 h-4 text-brandTeal"></i> Directorio de Pacientes
             </h4>
             <input type="text" id="patient-search" oninput="renderPatientsList()" placeholder="Buscar por nombre o ID..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm mb-4 focus:ring-2 focus:ring-brandTeal focus:outline-none">
-            
-            <div id="patients-list" class="space-y-2 max-h-96 overflow-y-auto">
-              <!-- Lista dinámica -->
-            </div>
+            <div id="patients-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
           </div>
 
           <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
             <div id="patient-detail-header" class="border-b border-slate-100 pb-4">
-              <p class="text-slate-400 text-sm">Selecciona un paciente de la lista para ver su expediente e historial clínico.</p>
+              <p class="text-slate-400 text-sm">Selecciona un paciente para ver su expediente.</p>
             </div>
 
             <div id="add-treatment-form-container" class="hidden bg-brandTeal-light p-4 rounded-xl border border-brandTeal/30">
-              <h5 class="font-bold text-slate-800 text-sm mb-3 text-brandTeal">Registrar Tratamiento Realizado</h5>
+              <h5 class="font-bold text-slate-800 text-sm mb-3 text-brandTeal">Registrar Tratamiento</h5>
               <form onsubmit="handleAddTreatment(event)" class="space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha del Procedimiento</label>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha</label>
                     <input type="date" id="treatment-date" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none">
                   </div>
                   <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tratamiento Realizado</label>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tratamiento</label>
                     <select id="treatment-name" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none">
                       <option value="">Selecciona tratamiento</option>
                       <option value="Limpieza Dental">Limpieza Dental</option>
@@ -273,8 +252,8 @@
                   </div>
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Observaciones / Detalles Técnicos</label>
-                  <textarea id="treatment-notes" placeholder="Detalles de la pieza tratada, anestesia, recomendaciones..." rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none"></textarea>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Observaciones</label>
+                  <textarea id="treatment-notes" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none"></textarea>
                 </div>
                 <button type="submit" class="px-4 py-2 bg-brandPink hover:bg-brandPink-hover text-white rounded-lg text-sm font-bold flex items-center space-x-1 shadow-sm">
                   <i data-lucide="plus" class="w-4 h-4"></i>
@@ -284,12 +263,9 @@
             </div>
 
             <div>
-              <h5 class="font-bold text-slate-800 text-sm mb-3">Historial Clínico de Tratamientos</h5>
-              <div id="treatment-history-list" class="space-y-3">
-                <!-- Se llena dinámicamente -->
-              </div>
+              <h5 class="font-bold text-slate-800 text-sm mb-3">Historial Clínico</h5>
+              <div id="treatment-history-list" class="space-y-3"></div>
             </div>
-
           </div>
         </div>
       </div>
@@ -298,7 +274,7 @@
 
   </main>
 
-  <!-- MODAL AUTENTICACIÓN DOCTORA -->
+  <!-- MODAL AUTENTICACIÓN -->
   <div id="auth-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full p-6 text-center space-y-4">
       <div class="w-12 h-12 rounded-full bg-brandPink-light text-brandPink flex items-center justify-center mx-auto">
@@ -310,7 +286,7 @@
       </div>
       <form onsubmit="validateDoctorPassword(event)" class="space-y-3">
         <input type="password" id="doctor-password" placeholder="Ingresa contraseña" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-center font-bold tracking-widest focus:ring-2 focus:ring-brandPink focus:border-brandPink focus:outline-none">
-        <p id="auth-error" class="text-xs text-rose-600 hidden font-semibold">Contraseña incorrecta. Inténtalo de nuevo.</p>
+        <p id="auth-error" class="text-xs text-rose-600 hidden font-semibold">Contraseña incorrecta.</p>
         <div class="flex gap-2">
           <button type="button" onclick="closeAuthModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-sm">Cancelar</button>
           <button type="submit" class="w-1/2 py-2.5 bg-brandPink hover:bg-brandPink-hover text-white font-bold rounded-lg text-sm">Ingresar</button>
@@ -319,44 +295,80 @@
     </div>
   </div>
 
-  <!-- LÓGICA JAVASCRIPT -->
-  <script>
-    lucide.createIcons();
+  <!-- FIREBASE V10 SDK (MODULAR) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      doc, 
+      setDoc, 
+      deleteDoc, 
+      updateDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const DOCTOR_PIN = "palacios20251931";
+    // Configuración real de Firebase para la clínica
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMV8Bii3xDkfYXrG69F6-GPMhsQ45gvUY",
+      authDomain: "clinica-dental-26.firebaseapp.com",
+      projectId: "clinica-dental-26",
+      storageBucket: "clinica-dental-26.firebasestorage.app",
+      messagingSenderId: "69481908804",
+      appId: "1:69481908804:web:f11fca4fe9f59a0a060a11",
+      measurementId: "G-HVT23PTPPN"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const DOCTOR_PIN = "palacios20251931";  // Clave de acceso para la doctora
     let isDoctorAuthenticated = false;
+    const ALL_SLOTS = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"];
 
-    // Catálogo maestro de horas
-    const ALL_SLOTS = [
-      "09:00 AM",
-      "10:00 AM",
-      "11:00 AM",
-      "02:00 PM",
-      "03:00 PM",
-      "04:00 PM",
-      "05:00 PM"
-    ];
-
-    // Cargar Datos
-    let appointments = JSON.parse(localStorage.getItem('smiling_appointments')) || [];
-    let patients = JSON.parse(localStorage.getItem('smiling_patients')) || {};
-    let doctorSchedule = JSON.parse(localStorage.getItem('smiling_doctor_schedule')) || {};
+    let appointments = [];
+    let patients = {};
+    let doctorSchedule = {};
     let selectedPatientId = null;
+
+    // Escuchadores en tiempo real (Realtime Sync)
+    onSnapshot(collection(db, "appointments"), (snapshot) => {
+      appointments = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+      renderAppointmentsTable();
+      updateAvailableTimes();
+    });
+
+    onSnapshot(collection(db, "schedule"), (snapshot) => {
+      doctorSchedule = {};
+      snapshot.docs.forEach(doc => {
+        doctorSchedule[doc.id] = doc.data().hours || [];
+      });
+      renderAvailabilityList();
+      populateClientDateDropdown();
+    });
+
+    onSnapshot(collection(db, "patients"), (snapshot) => {
+      patients = {};
+      snapshot.docs.forEach(doc => {
+        patients[doc.id] = doc.data();
+      });
+      renderPatientsList();
+      if(selectedPatientId && patients[selectedPatientId]) {
+        renderTreatmentsHistory(patients[selectedPatientId]);
+      }
+    });
 
     document.addEventListener("DOMContentLoaded", () => {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('avail-date').min = today;
-      
       renderHoursCheckboxes();
-      populateClientDateDropdown();
     });
 
-    // Renderizar Checkboxes de Horas en el Formulario Doctora
     function renderHoursCheckboxes() {
       const container = document.getElementById('hours-checkboxes');
       container.innerHTML = '';
-
-      ALL_SLOTS.forEach((slot, index) => {
+      ALL_SLOTS.forEach(slot => {
         const label = document.createElement('label');
         label.className = "flex items-center space-x-2 bg-slate-50 p-2 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100";
         label.innerHTML = `
@@ -367,7 +379,6 @@
       });
     }
 
-    // Poblar Selector de Fechas del Cliente (Solo Días Habilitados)
     function populateClientDateDropdown() {
       const dateSelect = document.getElementById('appointment-date');
       dateSelect.innerHTML = '';
@@ -393,11 +404,9 @@
       updateAvailableTimes();
     }
 
-    // Actualiza Horas en Formulario Cliente filtrando por Disponibilidad + Reservas
-    function updateAvailableTimes() {
+    window.updateAvailableTimes = function() {
       const selectedDate = document.getElementById('appointment-date').value;
       const timeSelect = document.getElementById('appointment-time');
-
       timeSelect.innerHTML = '';
 
       if (!selectedDate || !doctorSchedule[selectedDate]) {
@@ -406,8 +415,6 @@
       }
 
       const activeSlotsForDay = doctorSchedule[selectedDate] || [];
-
-      // Horas ya reservadas ese día
       const bookedTimes = appointments
         .filter(a => a.date === selectedDate && a.status !== 'Cancelada')
         .map(a => a.time);
@@ -426,14 +433,12 @@
         option.textContent = slot;
         timeSelect.appendChild(option);
       });
-    }
+    };
 
-    // Guardar / Editar Disponibilidad de Fecha (Doctora)
-    function handleSaveAvailability(e) {
+    window.handleSaveAvailability = async function(e) {
       e.preventDefault();
       const date = document.getElementById('avail-date').value;
       const checkboxes = document.querySelectorAll('input[name="doctor-hours"]:checked');
-      
       const selectedHours = Array.from(checkboxes).map(cb => cb.value);
 
       if (selectedHours.length === 0) {
@@ -441,138 +446,18 @@
         return;
       }
 
-      doctorSchedule[date] = selectedHours;
-      localStorage.setItem('smiling_doctor_schedule', JSON.stringify(doctorSchedule));
-
-      alert(`¡Disponibilidad guardada con éxito para la fecha ${date}!`);
+      await setDoc(doc(db, "schedule", date), { hours: selectedHours });
+      alert(`¡Disponibilidad guardada con éxito en la nube para ${date}!`);
       document.getElementById('avail-date').value = '';
-      
-      renderAvailabilityList();
-      populateClientDateDropdown();
-    }
+    };
 
-    // Renderizar Tarjetas de Fechas Habilitadas
-    function renderAvailabilityList() {
-      const container = document.getElementById('availability-list');
-      container.innerHTML = '';
-
-      const dates = Object.keys(doctorSchedule).sort();
-
-      if (dates.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-400 col-span-2">Aún no has agregado ninguna fecha de atención.</p>`;
-        return;
-      }
-
-      dates.forEach(dateStr => {
-        const hours = doctorSchedule[dateStr];
-        if (!hours || hours.length === 0) return;
-
-        const card = document.createElement('div');
-        card.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2";
-        
-        const hoursBadges = hours.map(h => `<span class="px-2 py-0.5 bg-brandTeal-light text-brandTeal font-bold rounded">${h}</span>`).join(' ');
-
-        card.innerHTML = `
-          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-            <span class="font-bold text-slate-800 text-sm">${dateStr}</span>
-            <button onclick="deleteAvailability('${dateStr}')" class="text-rose-600 hover:text-rose-800 p-1" title="Eliminar fecha">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-1">
-            ${hoursBadges}
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      lucide.createIcons();
-    }
-
-    function deleteAvailability(dateStr) {
+    window.deleteAvailability = async function(dateStr) {
       if (confirm(`¿Estás segura de quitar la disponibilidad para el día ${dateStr}?`)) {
-        delete doctorSchedule[dateStr];
-        localStorage.setItem('smiling_doctor_schedule', JSON.stringify(doctorSchedule));
-        renderAvailabilityList();
-        populateClientDateDropdown();
+        await deleteDoc(doc(db, "schedule", dateStr));
       }
-    }
+    };
 
-    function openAuthModal() {
-      if (isDoctorAuthenticated) {
-        showSection('doctor-section');
-      } else {
-        document.getElementById('auth-modal').classList.remove('hidden');
-        document.getElementById('doctor-password').focus();
-      }
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
-      document.getElementById('doctor-password').value = '';
-      document.getElementById('auth-error').classList.add('hidden');
-    }
-
-    function validateDoctorPassword(e) {
-      e.preventDefault();
-      const inputPin = document.getElementById('doctor-password').value;
-      
-      if (inputPin === DOCTOR_PIN) {
-        isDoctorAuthenticated = true;
-        closeAuthModal();
-        showSection('doctor-section');
-      } else {
-        document.getElementById('auth-error').classList.remove('hidden');
-      }
-    }
-
-    function logoutDoctor() {
-      isDoctorAuthenticated = false;
-      showSection('client-section');
-      alert('Has cerrado sesión correctamente.');
-    }
-
-    function showSection(sectionId) {
-      document.getElementById('client-section').classList.add('hidden');
-      document.getElementById('doctor-section').classList.add('hidden');
-      document.getElementById(sectionId).classList.remove('hidden');
-
-      const btnClient = document.getElementById('btn-client');
-      const btnDoctor = document.getElementById('btn-doctor');
-
-      if (sectionId === 'client-section') {
-        btnClient.className = "px-4 py-2 rounded-lg bg-brandTeal text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
-        btnDoctor.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
-        populateClientDateDropdown();
-      } else {
-        btnDoctor.className = "px-4 py-2 rounded-lg bg-brandPink text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
-        btnClient.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
-        renderAppointmentsTable();
-        renderAvailabilityList();
-        renderPatientsList();
-      }
-    }
-
-    function showDoctorSubSection(tabId) {
-      document.getElementById('appointments-list-tab').classList.add('hidden');
-      document.getElementById('availability-tab').classList.add('hidden');
-      document.getElementById('patients-history-tab').classList.add('hidden');
-      
-      document.getElementById(tabId).classList.remove('hidden');
-
-      const tabApp = document.getElementById('tab-btn-appointments');
-      const tabAvail = document.getElementById('tab-btn-availability');
-      const tabPat = document.getElementById('tab-btn-patients');
-
-      const activeClass = "pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2 whitespace-nowrap";
-      const inactiveClass = "pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2 whitespace-nowrap";
-
-      tabApp.className = tabId === 'appointments-list-tab' ? activeClass : inactiveClass;
-      tabAvail.className = tabId === 'availability-tab' ? activeClass : inactiveClass;
-      tabPat.className = tabId === 'patients-history-tab' ? activeClass : inactiveClass;
-    }
-
-    function handleCreateAppointment(e) {
+    window.handleCreateAppointment = async function(e) {
       e.preventDefault();
 
       const id = document.getElementById('client-id').value.trim();
@@ -584,21 +469,19 @@
       const notes = document.getElementById('appointment-notes').value;
 
       if (!date || !time) {
-        alert('Por favor selecciona una fecha y una hora válidas para tu consulta.');
+        alert('Por favor selecciona una fecha y una hora válidas.');
         return;
       }
 
-      // Validación preventiva extra contra citas duplicadas en el mismo horario
       const isTimeOccupied = appointments.some(a => a.date === date && a.time === time && a.status !== 'Cancelada');
 
       if (isTimeOccupied) {
-        alert('Lo sentimos, este horario acaba de ser reservado. Por favor elige otra hora u otra fecha.');
+        alert('Lo sentimos, este horario acaba de ser reservado.');
         updateAvailableTimes();
         return;
       }
 
-      const newAppointment = {
-        id: Date.now(),
+      await addDoc(collection(db, "appointments"), {
         clientId: id,
         clientName: name,
         clientPhone: phone,
@@ -606,29 +489,21 @@
         time: time,
         reason: reason,
         notes: notes,
-        status: 'Pendiente'
-      };
+        status: 'Pendiente',
+        createdAt: new Date().toISOString()
+      });
 
-      appointments.push(newAppointment);
-      localStorage.setItem('smiling_appointments', JSON.stringify(appointments));
+      const currentPatient = patients[id] || { id: id, name: name, phone: phone, treatments: [] };
+      await setDoc(doc(db, "patients", id), {
+        id: id,
+        name: name,
+        phone: phone,
+        treatments: currentPatient.treatments || []
+      });
 
-      if (!patients[id]) {
-        patients[id] = {
-          id: id,
-          name: name,
-          phone: phone,
-          treatments: []
-        };
-      } else {
-        patients[id].name = name;
-        patients[id].phone = phone;
-      }
-      localStorage.setItem('smiling_patients', JSON.stringify(patients));
-
-      alert('¡Cita registrada con éxito! La Dra. Carolina Palencia revisará tu solicitud.');
+      alert('¡Cita registrada con éxito!');
       document.getElementById('appointment-form').reset();
-      populateClientDateDropdown();
-    }
+    };
 
     function renderAppointmentsTable() {
       const tbody = document.getElementById('appointments-table-body');
@@ -653,8 +528,8 @@
           <td class="p-4 font-medium text-slate-700">${app.reason}</td>
           <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeColor}">${app.status}</span></td>
           <td class="p-4 text-center space-x-1">
-            <button onclick="changeAppointmentStatus(${app.id}, 'Completada')" title="Completar cita" class="p-1 hover:bg-slate-200 rounded text-emerald-600"><i data-lucide="check" class="w-4 h-4"></i></button>
-            <button onclick="changeAppointmentStatus(${app.id}, 'Cancelada')" title="Cancelar cita" class="p-1 hover:bg-slate-200 rounded text-rose-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <button onclick="changeAppointmentStatus('${app.firebaseId}', 'Completada')" title="Completar cita" class="p-1 hover:bg-slate-200 rounded text-emerald-600"><i data-lucide="check" class="w-4 h-4"></i></button>
+            <button onclick="changeAppointmentStatus('${app.firebaseId}', 'Cancelada')" title="Cancelar cita" class="p-1 hover:bg-slate-200 rounded text-rose-600"><i data-lucide="x" class="w-4 h-4"></i></button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -662,14 +537,44 @@
       lucide.createIcons();
     }
 
-    function changeAppointmentStatus(appointmentId, status) {
-      appointments = appointments.map(a => a.id === appointmentId ? {...a, status: status} : a);
-      localStorage.setItem('smiling_appointments', JSON.stringify(appointments));
-      renderAppointmentsTable();
-      updateAvailableTimes();
+    window.changeAppointmentStatus = async function(firebaseId, status) {
+      await updateDoc(doc(db, "appointments", firebaseId), { status: status });
+    };
+
+    function renderAvailabilityList() {
+      const container = document.getElementById('availability-list');
+      container.innerHTML = '';
+      const dates = Object.keys(doctorSchedule).sort();
+
+      if (dates.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 col-span-2">Aún no has agregado ninguna fecha.</p>`;
+        return;
+      }
+
+      dates.forEach(dateStr => {
+        const hours = doctorSchedule[dateStr];
+        if (!hours || hours.length === 0) return;
+
+        const card = document.createElement('div');
+        card.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2";
+        const hoursBadges = hours.map(h => `<span class="px-2 py-0.5 bg-brandTeal-light text-brandTeal font-bold rounded">${h}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+            <span class="font-bold text-slate-800 text-sm">${dateStr}</span>
+            <button onclick="deleteAvailability('${dateStr}')" class="text-rose-600 hover:text-rose-800 p-1">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-1">${hoursBadges}</div>
+        `;
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
     }
 
-    function renderPatientsList() {
+    window.renderPatientsList = function() {
       const listContainer = document.getElementById('patients-list');
       const searchQuery = document.getElementById('patient-search').value.toLowerCase();
       listContainer.innerHTML = '';
@@ -696,15 +601,14 @@
         `;
         listContainer.appendChild(btn);
       });
-    }
+    };
 
     function selectPatient(patientId) {
       selectedPatientId = patientId;
       renderPatientsList();
-      
+
       const p = patients[patientId];
       const header = document.getElementById('patient-detail-header');
-      
       header.innerHTML = `
         <h4 class="text-lg font-black text-brandPink">${p.name}</h4>
         <div class="flex space-x-4 text-xs text-slate-500 mt-1">
@@ -717,7 +621,7 @@
       renderTreatmentsHistory(p);
     }
 
-    function handleAddTreatment(e) {
+    window.handleAddTreatment = async function(e) {
       e.preventDefault();
       if (!selectedPatientId) return;
 
@@ -725,25 +629,22 @@
       const name = document.getElementById('treatment-name').value;
       const notes = document.getElementById('treatment-notes').value;
 
-      patients[selectedPatientId].treatments.push({
-        id: Date.now(),
-        date: date,
-        name: name,
-        notes: notes
+      const updatedTreatments = patients[selectedPatientId].treatments || [];
+      updatedTreatments.push({ id: Date.now(), date: date, name: name, notes: notes });
+
+      await updateDoc(doc(db, "patients", selectedPatientId), {
+        treatments: updatedTreatments
       });
 
-      localStorage.setItem('smiling_patients', JSON.stringify(patients));
       document.getElementById('treatment-notes').value = '';
-
-      renderTreatmentsHistory(patients[selectedPatientId]);
-    }
+    };
 
     function renderTreatmentsHistory(patient) {
       const container = document.getElementById('treatment-history-list');
       container.innerHTML = '';
 
       if (!patient.treatments || patient.treatments.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-400">No hay tratamientos registrados aún para este paciente.</p>`;
+        container.innerHTML = `<p class="text-xs text-slate-400">No hay tratamientos registrados.</p>`;
         return;
       }
 
@@ -755,11 +656,78 @@
             <span>${t.name}</span>
             <span class="text-slate-400 font-normal">${t.date}</span>
           </div>
-          <p class="text-slate-600">${t.notes || 'Sin observaciones de la sesión.'}</p>
+          <p class="text-slate-600">${t.notes || 'Sin observaciones.'}</p>
         `;
         container.appendChild(card);
       });
     }
+
+    // Navegación y Modales
+    window.openAuthModal = function() {
+      if (isDoctorAuthenticated) {
+        showSection('doctor-section');
+      } else {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        document.getElementById('doctor-password').focus();
+      }
+    };
+
+    window.closeAuthModal = function() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      document.getElementById('doctor-password').value = '';
+      document.getElementById('auth-error').classList.add('hidden');
+    };
+
+    window.validateDoctorPassword = function(e) {
+      e.preventDefault();
+      const inputPin = document.getElementById('doctor-password').value;
+      if (inputPin === DOCTOR_PIN) {
+        isDoctorAuthenticated = true;
+        closeAuthModal();
+        showSection('doctor-section');
+      } else {
+        document.getElementById('auth-error').classList.remove('hidden');
+      }
+    };
+
+    window.logoutDoctor = function() {
+      isDoctorAuthenticated = false;
+      showSection('client-section');
+      alert('Has cerrado sesión correctamente.');
+    };
+
+    window.showSection = function(sectionId) {
+      document.getElementById('client-section').classList.add('hidden');
+      document.getElementById('doctor-section').classList.add('hidden');
+      document.getElementById(sectionId).classList.remove('hidden');
+
+      const btnClient = document.getElementById('btn-client');
+      const btnDoctor = document.getElementById('btn-doctor');
+
+      if (sectionId === 'client-section') {
+        btnClient.className = "px-4 py-2 rounded-lg bg-brandTeal text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
+        btnDoctor.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
+      } else {
+        btnDoctor.className = "px-4 py-2 rounded-lg bg-brandPink text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
+        btnClient.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
+      }
+    };
+
+    window.showDoctorSubSection = function(tabId) {
+      document.getElementById('appointments-list-tab').classList.add('hidden');
+      document.getElementById('availability-tab').classList.add('hidden');
+      document.getElementById('patients-history-tab').classList.add('hidden');
+      document.getElementById(tabId).classList.remove('hidden');
+
+      const activeClass = "pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2 whitespace-nowrap";
+      const inactiveClass = "pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2 whitespace-nowrap";
+
+      document.getElementById('tab-btn-appointments').className = tabId === 'appointments-list-tab' ? activeClass : inactiveClass;
+      document.getElementById('tab-btn-availability').className = tabId === 'availability-tab' ? activeClass : inactiveClass;
+      document.getElementById('tab-btn-patients').className = tabId === 'patients-history-tab' ? activeClass : inactiveClass;
+    };
+
+    lucide.createIcons();
   </script>
 </body>
 </html>
