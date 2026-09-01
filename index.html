@@ -309,7 +309,7 @@
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuración real de Firebase para la clínica
+    // Credenciales registradas de tu proyecto Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBMV8Bii3xDkfYXrG69F6-GPMhsQ45gvUY",
       authDomain: "clinica-dental-26.firebaseapp.com",
@@ -323,7 +323,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const DOCTOR_PIN = "palacios20251931";  // Clave de acceso para la doctora
+    const DOCTOR_PIN = "1234";
     let isDoctorAuthenticated = false;
     const ALL_SLOTS = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"];
 
