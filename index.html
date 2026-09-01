@@ -295,6 +295,22 @@
     </div>
   </div>
 
+  <!-- MODAL NOTIFICACIÓN PERSONALIZADO -->
+  <div id="custom-alert" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-sm w-full p-6 text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+        <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-800">Dra. Carolina Palencia</h4>
+        <p id="custom-alert-message" class="text-slate-600 font-medium text-sm mt-1"></p>
+      </div>
+      <button onclick="closeCustomAlert()" class="w-full py-2.5 bg-brandPink hover:bg-brandPink-hover text-white font-bold rounded-lg text-sm transition">
+        Aceptar
+      </button>
+    </div>
+  </div>
+
   <!-- FIREBASE V10 SDK (MODULAR) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -331,6 +347,16 @@
     let patients = {};
     let doctorSchedule = {};
     let selectedPatientId = null;
+
+    // Funciones del modal de avisos personalizado
+    window.showAlert = function(mensaje) {
+      document.getElementById('custom-alert-message').textContent = mensaje;
+      document.getElementById('custom-alert').classList.remove('hidden');
+    };
+
+    window.closeCustomAlert = function() {
+      document.getElementById('custom-alert').classList.add('hidden');
+    };
 
     // Escuchadores en tiempo real (Realtime Sync)
     onSnapshot(collection(db, "appointments"), (snapshot) => {
@@ -442,12 +468,12 @@
       const selectedHours = Array.from(checkboxes).map(cb => cb.value);
 
       if (selectedHours.length === 0) {
-        alert('Por favor selecciona al menos un horario para la fecha.');
+        showAlert('Por favor selecciona al menos un horario para la fecha.');
         return;
       }
 
       await setDoc(doc(db, "schedule", date), { hours: selectedHours });
-      alert(`¡Disponibilidad guardada con éxito en la nube para ${date}!`);
+      showAlert(`¡Disponibilidad guardada con éxito para ${date}!`);
       document.getElementById('avail-date').value = '';
     };
 
@@ -469,14 +495,14 @@
       const notes = document.getElementById('appointment-notes').value;
 
       if (!date || !time) {
-        alert('Por favor selecciona una fecha y una hora válidas.');
+        showAlert('Por favor selecciona una fecha y una hora válidas.');
         return;
       }
 
       const isTimeOccupied = appointments.some(a => a.date === date && a.time === time && a.status !== 'Cancelada');
 
       if (isTimeOccupied) {
-        alert('Lo sentimos, este horario acaba de ser reservado.');
+        showAlert('Lo sentimos, este horario acaba de ser reservado.');
         updateAvailableTimes();
         return;
       }
@@ -501,7 +527,7 @@
         treatments: currentPatient.treatments || []
       });
 
-      alert('¡Cita registrada con éxito!');
+      showAlert('¡Cita registrada con éxito!');
       document.getElementById('appointment-form').reset();
     };
 
@@ -693,7 +719,7 @@
     window.logoutDoctor = function() {
       isDoctorAuthenticated = false;
       showSection('client-section');
-      alert('Has cerrado sesión correctamente.');
+      showAlert('Has cerrado sesión correctamente.');
     };
 
     window.showSection = function(sectionId) {
