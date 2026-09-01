@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Odontologia | Dra. Carolina Palencia</title>
+  <title>Sonríe, deja que tus dientes respiren | Dra. Carolina Palencia</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -32,7 +32,7 @@
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
   <!-- Navegación Principal -->
-  <header class="bg-white border-b-4 border-brandPink shadow-sm sticky top-0 z-50">
+  <header class="bg-white border-b-4 border-brandPink shadow-sm sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brandTeal to-brandPink flex items-center justify-center text-white font-bold text-xl shadow">
@@ -43,13 +43,13 @@
           <p class="text-xs text-brandTeal font-bold tracking-wider uppercase">Dra. Carolina Palencia - Clínica Dental</p>
         </div>
       </div>
-      <nav class="flex space-x-2">
+      <nav class="flex space-x-2" id="nav-buttons">
         <button onclick="showSection('client-section')" id="btn-client" class="px-4 py-2 rounded-lg bg-brandTeal hover:bg-brandTeal-hover text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm">
           <i data-lucide="calendar" class="w-4 h-4"></i>
           <span>Agendar Cita</span>
         </button>
-        <button onclick="showSection('doctor-section')" id="btn-doctor" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2">
-          <i data-lucide="user-check" class="w-4 h-4"></i>
+        <button onclick="openAuthModal()" id="btn-doctor" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2">
+          <i data-lucide="lock" class="w-4 h-4"></i>
           <span>Panel Doctora</span>
         </button>
       </nav>
@@ -58,7 +58,7 @@
 
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- SECCIÓN CLIENTE: AGENDAR CITA -->
+    <!-- SECCIÓN CLIENTE: AGENDAR CITA (PÚBLICA) -->
     <section id="client-section" class="block">
       <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-100">
         <div class="text-center mb-6">
@@ -87,20 +87,15 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">Fecha *</label>
-              <input type="date" id="appointment-date" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition">
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Fecha de Atención *</label>
+              <select id="appointment-date" onchange="updateAvailableTimes()" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition">
+                <option value="">Cargando fechas disponibles...</option>
+              </select>
             </div>
             <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">Hora *</label>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Hora disponible *</label>
               <select id="appointment-time" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brandTeal focus:border-brandTeal focus:outline-none transition">
-                <option value="">Selecciona hora</option>
-                <option value="09:00 AM">09:00 AM</option>
-                <option value="10:00 AM">10:00 AM</option>
-                <option value="11:00 AM">11:00 AM</option>
-                <option value="02:00 PM">02:00 PM</option>
-                <option value="03:00 PM">03:00 PM</option>
-                <option value="04:00 PM">04:00 PM</option>
-                <option value="05:00 PM">05:00 PM</option>
+                <option value="">Selecciona fecha primero</option>
               </select>
             </div>
           </div>
@@ -134,22 +129,37 @@
       </div>
     </section>
 
-    <!-- SECCIÓN DOCTORA: PANEL DE CONTROL -->
+    <!-- SECCIÓN DOCTORA: PANEL DE CONTROL (PRIVADO) -->
     <section id="doctor-section" class="hidden space-y-8">
       
-      <!-- Sub-navegación Doctora -->
-      <div class="flex border-b border-slate-200 gap-4">
-        <button onclick="showDoctorSubSection('appointments-list-tab')" id="tab-btn-appointments" class="pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2">
-          <i data-lucide="list-todo" class="w-4 h-4"></i>
-          <span>Citas Programadas</span>
-        </button>
-        <button onclick="showDoctorSubSection('patients-history-tab')" id="tab-btn-patients" class="pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2">
-          <i data-lucide="users" class="w-4 h-4"></i>
-          <span>Pacientes e Historial Clínico</span>
+      <div class="flex justify-between items-center bg-brandPink-light p-4 rounded-xl border border-brandPink/20">
+        <div>
+          <h2 class="font-black text-brandPink text-lg">Panel Administrativo</h2>
+          <p class="text-xs text-slate-600">Sesión iniciada como Dra. Carolina Palencia</p>
+        </div>
+        <button onclick="logoutDoctor()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center space-x-1">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Cerrar Sesión</span>
         </button>
       </div>
 
-      <!-- Tab: Lista de Citas Programadas -->
+      <!-- Sub-navegación Doctora -->
+      <div class="flex border-b border-slate-200 gap-4 overflow-x-auto">
+        <button onclick="showDoctorSubSection('appointments-list-tab')" id="tab-btn-appointments" class="pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2 whitespace-nowrap">
+          <i data-lucide="list-todo" class="w-4 h-4"></i>
+          <span>Citas Programadas</span>
+        </button>
+        <button onclick="showDoctorSubSection('availability-tab')" id="tab-btn-availability" class="pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2 whitespace-nowrap">
+          <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+          <span>Gestión de Disponibilidad</span>
+        </button>
+        <button onclick="showDoctorSubSection('patients-history-tab')" id="tab-btn-patients" class="pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2 whitespace-nowrap">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>Pacientes e Historial</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Lista de Citas Programadas -->
       <div id="appointments-list-tab" class="block space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="text-xl font-bold text-slate-800">Citas de Pacientes</h3>
@@ -168,17 +178,60 @@
               </tr>
             </thead>
             <tbody id="appointments-table-body">
-              <!-- Las citas se inyectan dinámicamente -->
+              <!-- Citas dinámicas -->
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Tab: Pacientes e Historial de Tratamientos -->
+      <!-- Tab 2: Gestión de Disponibilidad y Fechas de Atención -->
+      <div id="availability-tab" class="hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Formulario Agregar/Editar Disponibilidad -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <i data-lucide="calendar-plus" class="w-5 h-5 text-brandTeal"></i> Habilitar Fecha y Horarios
+            </h4>
+            <p class="text-xs text-slate-500">Selecciona un día y marca los bloques de horarios en los que atenderás consultas.</p>
+
+            <form onsubmit="handleSaveAvailability(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Fecha a atender *</label>
+                <input type="date" id="avail-date" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brandTeal focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-2">Horarios Disponibles *</label>
+                <div class="grid grid-cols-2 gap-2 text-xs" id="hours-checkboxes">
+                  <!-- Generado por JS -->
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-brandTeal hover:bg-brandTeal-hover text-white font-bold rounded-lg text-sm shadow-sm flex items-center justify-center space-x-2">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Guardar Disponibilidad</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Lista de Fechas Configuradas -->
+          <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <i data-lucide="calendar-range" class="w-5 h-5 text-brandPink"></i> Fechas Habilitadas para Citas
+            </h4>
+            <div id="availability-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+              <!-- Tarjetas dinámicas -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 3: Pacientes e Historial de Tratamientos -->
       <div id="patients-history-tab" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <!-- Lista de Pacientes -->
           <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
               <i data-lucide="users" class="w-4 h-4 text-brandTeal"></i> Directorio de Pacientes
@@ -190,13 +243,11 @@
             </div>
           </div>
 
-          <!-- Historial Clínico del Paciente Seleccionado -->
           <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
             <div id="patient-detail-header" class="border-b border-slate-100 pb-4">
               <p class="text-slate-400 text-sm">Selecciona un paciente de la lista para ver su expediente e historial clínico.</p>
             </div>
 
-            <!-- Formulario añadir historia clínica -->
             <div id="add-treatment-form-container" class="hidden bg-brandTeal-light p-4 rounded-xl border border-brandTeal/30">
               <h5 class="font-bold text-slate-800 text-sm mb-3 text-brandTeal">Registrar Tratamiento Realizado</h5>
               <form onsubmit="handleAddTreatment(event)" class="space-y-3">
@@ -232,7 +283,6 @@
               </form>
             </div>
 
-            <!-- Historial de Tratamientos -->
             <div>
               <h5 class="font-bold text-slate-800 text-sm mb-3">Historial Clínico de Tratamientos</h5>
               <div id="treatment-history-list" class="space-y-3">
@@ -248,13 +298,239 @@
 
   </main>
 
+  <!-- MODAL AUTENTICACIÓN DOCTORA -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full p-6 text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-brandPink-light text-brandPink flex items-center justify-center mx-auto">
+        <i data-lucide="shield-check" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-slate-800">Acceso Privado - Doctora</h3>
+        <p class="text-xs text-slate-500 mt-1">Ingresa tu clave de acceso para ver las citas e historial médico.</p>
+      </div>
+      <form onsubmit="validateDoctorPassword(event)" class="space-y-3">
+        <input type="password" id="doctor-password" placeholder="Ingresa contraseña" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-center font-bold tracking-widest focus:ring-2 focus:ring-brandPink focus:border-brandPink focus:outline-none">
+        <p id="auth-error" class="text-xs text-rose-600 hidden font-semibold">Contraseña incorrecta. Inténtalo de nuevo.</p>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeAuthModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-sm">Cancelar</button>
+          <button type="submit" class="w-1/2 py-2.5 bg-brandPink hover:bg-brandPink-hover text-white font-bold rounded-lg text-sm">Ingresar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- LÓGICA JAVASCRIPT -->
   <script>
     lucide.createIcons();
 
+    const DOCTOR_PIN = "palacios20251931";
+    let isDoctorAuthenticated = false;
+
+    // Catálogo maestro de horas
+    const ALL_SLOTS = [
+      "09:00 AM",
+      "10:00 AM",
+      "11:00 AM",
+      "02:00 PM",
+      "03:00 PM",
+      "04:00 PM",
+      "05:00 PM"
+    ];
+
+    // Cargar Datos
     let appointments = JSON.parse(localStorage.getItem('smiling_appointments')) || [];
     let patients = JSON.parse(localStorage.getItem('smiling_patients')) || {};
+    let doctorSchedule = JSON.parse(localStorage.getItem('smiling_doctor_schedule')) || {};
     let selectedPatientId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('avail-date').min = today;
+      
+      renderHoursCheckboxes();
+      populateClientDateDropdown();
+    });
+
+    // Renderizar Checkboxes de Horas en el Formulario Doctora
+    function renderHoursCheckboxes() {
+      const container = document.getElementById('hours-checkboxes');
+      container.innerHTML = '';
+
+      ALL_SLOTS.forEach((slot, index) => {
+        const label = document.createElement('label');
+        label.className = "flex items-center space-x-2 bg-slate-50 p-2 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100";
+        label.innerHTML = `
+          <input type="checkbox" name="doctor-hours" value="${slot}" class="rounded text-brandTeal focus:ring-brandTeal" checked>
+          <span class="font-medium text-slate-700">${slot}</span>
+        `;
+        container.appendChild(label);
+      });
+    }
+
+    // Poblar Selector de Fechas del Cliente (Solo Días Habilitados)
+    function populateClientDateDropdown() {
+      const dateSelect = document.getElementById('appointment-date');
+      dateSelect.innerHTML = '';
+
+      const availableDates = Object.keys(doctorSchedule)
+        .filter(dateStr => doctorSchedule[dateStr] && doctorSchedule[dateStr].length > 0)
+        .sort();
+
+      if (availableDates.length === 0) {
+        dateSelect.innerHTML = '<option value="">No hay fechas de atención habilitadas</option>';
+        updateAvailableTimes();
+        return;
+      }
+
+      dateSelect.innerHTML = '<option value="">Selecciona una fecha disponible</option>';
+      availableDates.forEach(dateStr => {
+        const option = document.createElement('option');
+        option.value = dateStr;
+        option.textContent = dateStr;
+        dateSelect.appendChild(option);
+      });
+
+      updateAvailableTimes();
+    }
+
+    // Actualiza Horas en Formulario Cliente filtrando por Disponibilidad + Reservas
+    function updateAvailableTimes() {
+      const selectedDate = document.getElementById('appointment-date').value;
+      const timeSelect = document.getElementById('appointment-time');
+
+      timeSelect.innerHTML = '';
+
+      if (!selectedDate || !doctorSchedule[selectedDate]) {
+        timeSelect.innerHTML = '<option value="">Selecciona fecha primero</option>';
+        return;
+      }
+
+      const activeSlotsForDay = doctorSchedule[selectedDate] || [];
+
+      // Horas ya reservadas ese día
+      const bookedTimes = appointments
+        .filter(a => a.date === selectedDate && a.status !== 'Cancelada')
+        .map(a => a.time);
+
+      const finalSlots = activeSlotsForDay.filter(slot => !bookedTimes.includes(slot));
+
+      if (finalSlots.length === 0) {
+        timeSelect.innerHTML = '<option value="">No hay horarios libres para esta fecha</option>';
+        return;
+      }
+
+      timeSelect.innerHTML = '<option value="">Selecciona hora</option>';
+      finalSlots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot;
+        option.textContent = slot;
+        timeSelect.appendChild(option);
+      });
+    }
+
+    // Guardar / Editar Disponibilidad de Fecha (Doctora)
+    function handleSaveAvailability(e) {
+      e.preventDefault();
+      const date = document.getElementById('avail-date').value;
+      const checkboxes = document.querySelectorAll('input[name="doctor-hours"]:checked');
+      
+      const selectedHours = Array.from(checkboxes).map(cb => cb.value);
+
+      if (selectedHours.length === 0) {
+        alert('Por favor selecciona al menos un horario para la fecha.');
+        return;
+      }
+
+      doctorSchedule[date] = selectedHours;
+      localStorage.setItem('smiling_doctor_schedule', JSON.stringify(doctorSchedule));
+
+      alert(`¡Disponibilidad guardada con éxito para la fecha ${date}!`);
+      document.getElementById('avail-date').value = '';
+      
+      renderAvailabilityList();
+      populateClientDateDropdown();
+    }
+
+    // Renderizar Tarjetas de Fechas Habilitadas
+    function renderAvailabilityList() {
+      const container = document.getElementById('availability-list');
+      container.innerHTML = '';
+
+      const dates = Object.keys(doctorSchedule).sort();
+
+      if (dates.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 col-span-2">Aún no has agregado ninguna fecha de atención.</p>`;
+        return;
+      }
+
+      dates.forEach(dateStr => {
+        const hours = doctorSchedule[dateStr];
+        if (!hours || hours.length === 0) return;
+
+        const card = document.createElement('div');
+        card.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2";
+        
+        const hoursBadges = hours.map(h => `<span class="px-2 py-0.5 bg-brandTeal-light text-brandTeal font-bold rounded">${h}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+            <span class="font-bold text-slate-800 text-sm">${dateStr}</span>
+            <button onclick="deleteAvailability('${dateStr}')" class="text-rose-600 hover:text-rose-800 p-1" title="Eliminar fecha">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-1">
+            ${hoursBadges}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function deleteAvailability(dateStr) {
+      if (confirm(`¿Estás segura de quitar la disponibilidad para el día ${dateStr}?`)) {
+        delete doctorSchedule[dateStr];
+        localStorage.setItem('smiling_doctor_schedule', JSON.stringify(doctorSchedule));
+        renderAvailabilityList();
+        populateClientDateDropdown();
+      }
+    }
+
+    function openAuthModal() {
+      if (isDoctorAuthenticated) {
+        showSection('doctor-section');
+      } else {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        document.getElementById('doctor-password').focus();
+      }
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      document.getElementById('doctor-password').value = '';
+      document.getElementById('auth-error').classList.add('hidden');
+    }
+
+    function validateDoctorPassword(e) {
+      e.preventDefault();
+      const inputPin = document.getElementById('doctor-password').value;
+      
+      if (inputPin === DOCTOR_PIN) {
+        isDoctorAuthenticated = true;
+        closeAuthModal();
+        showSection('doctor-section');
+      } else {
+        document.getElementById('auth-error').classList.remove('hidden');
+      }
+    }
+
+    function logoutDoctor() {
+      isDoctorAuthenticated = false;
+      showSection('client-section');
+      alert('Has cerrado sesión correctamente.');
+    }
 
     function showSection(sectionId) {
       document.getElementById('client-section').classList.add('hidden');
@@ -267,29 +543,33 @@
       if (sectionId === 'client-section') {
         btnClient.className = "px-4 py-2 rounded-lg bg-brandTeal text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
         btnDoctor.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
+        populateClientDateDropdown();
       } else {
         btnDoctor.className = "px-4 py-2 rounded-lg bg-brandPink text-white transition text-sm font-semibold flex items-center space-x-2 shadow-sm";
         btnClient.className = "px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition text-sm font-semibold flex items-center space-x-2";
         renderAppointmentsTable();
+        renderAvailabilityList();
         renderPatientsList();
       }
     }
 
     function showDoctorSubSection(tabId) {
       document.getElementById('appointments-list-tab').classList.add('hidden');
+      document.getElementById('availability-tab').classList.add('hidden');
       document.getElementById('patients-history-tab').classList.add('hidden');
+      
       document.getElementById(tabId).classList.remove('hidden');
 
       const tabApp = document.getElementById('tab-btn-appointments');
+      const tabAvail = document.getElementById('tab-btn-availability');
       const tabPat = document.getElementById('tab-btn-patients');
 
-      if (tabId === 'appointments-list-tab') {
-        tabApp.className = "pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2";
-        tabPat.className = "pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2";
-      } else {
-        tabPat.className = "pb-3 px-3 border-b-2 border-brandTeal font-bold text-brandTeal flex items-center space-x-2";
-        tabApp.className = "pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandPink flex items-center space-x-2";
-      }
+      const activeClass = "pb-3 px-3 border-b-2 border-brandPink font-bold text-brandPink flex items-center space-x-2 whitespace-nowrap";
+      const inactiveClass = "pb-3 px-3 border-b-2 border-transparent font-medium text-slate-500 hover:text-brandTeal flex items-center space-x-2 whitespace-nowrap";
+
+      tabApp.className = tabId === 'appointments-list-tab' ? activeClass : inactiveClass;
+      tabAvail.className = tabId === 'availability-tab' ? activeClass : inactiveClass;
+      tabPat.className = tabId === 'patients-history-tab' ? activeClass : inactiveClass;
     }
 
     function handleCreateAppointment(e) {
@@ -302,6 +582,20 @@
       const time = document.getElementById('appointment-time').value;
       const reason = document.getElementById('appointment-reason').value;
       const notes = document.getElementById('appointment-notes').value;
+
+      if (!date || !time) {
+        alert('Por favor selecciona una fecha y una hora válidas para tu consulta.');
+        return;
+      }
+
+      // Validación preventiva extra contra citas duplicadas en el mismo horario
+      const isTimeOccupied = appointments.some(a => a.date === date && a.time === time && a.status !== 'Cancelada');
+
+      if (isTimeOccupied) {
+        alert('Lo sentimos, este horario acaba de ser reservado. Por favor elige otra hora u otra fecha.');
+        updateAvailableTimes();
+        return;
+      }
 
       const newAppointment = {
         id: Date.now(),
@@ -331,8 +625,9 @@
       }
       localStorage.setItem('smiling_patients', JSON.stringify(patients));
 
-      alert('¡Cita registrada con éxito! La Dra. Carolina revisará tu solicitud.');
+      alert('¡Cita registrada con éxito! La Dra. Carolina Palencia revisará tu solicitud.');
       document.getElementById('appointment-form').reset();
+      populateClientDateDropdown();
     }
 
     function renderAppointmentsTable() {
@@ -371,6 +666,7 @@
       appointments = appointments.map(a => a.id === appointmentId ? {...a, status: status} : a);
       localStorage.setItem('smiling_appointments', JSON.stringify(appointments));
       renderAppointmentsTable();
+      updateAvailableTimes();
     }
 
     function renderPatientsList() {
@@ -437,7 +733,6 @@
       });
 
       localStorage.setItem('smiling_patients', JSON.stringify(patients));
-      
       document.getElementById('treatment-notes').value = '';
 
       renderTreatmentsHistory(patients[selectedPatientId]);
